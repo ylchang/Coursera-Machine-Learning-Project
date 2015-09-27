@@ -6,7 +6,7 @@ output: html_document
 ---
 
 ##Synopsis
-In this report a model is created for the data from accelerometers on the belt, forearm, arm, and dumbell of 6 participants to predict 5 different ways to perform barbell lifts. The model will be trained and cross-validated by using the **training data** from  
+This report summairzes the procedure of building a machine learning algorithm to predict activity quality from activity monitors. This algorithm is created for the data from accelerometers on the belt, forearm, arm, and dumbell of 6 participants to predict 5 different ways to perform barbell lifts. The model will be trained and cross-validated by using the **training data** from  
 *https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv*
 
 And the final model will be used to predict the barbell lift patterns from the **testing data** from  
@@ -107,4 +107,11 @@ confusionMatrix(testTrain$classe,predict(gbmFit1,testTrain))
 This model has **2.4% in-sample error** (97.6% accuracy) and **4% out-of-sample error** (96% accuracy). 
 
 ##Results
-Commparing the out-of-sample errors, the better model, i.e. the one with the lower out-of-sample error is chosen for making the prediction for the **testing data**. The better is the **Random Forest** model. **According to the cross validation, the out-of-sample error is 1%.**
+Commparing the out-of-sample errors, the better model, i.e. the one with the lower out-of-sample error is chosen for making the prediction for the **testing data**. The better one is the **Random Forest** model. **According to the cross validation, the out-of-sample error is 1%.**   
+
+The following R code chuck produce the predictions for the 20 test cases by using the model created above. The test case data, **testNum** have been cleaned up in the **Data Processing** section. These prodictions are submitted as the fulfillment of this project's **"Course Project: Submission"** portion.
+
+```{r}
+testPredictions <- predict(modFitRF,testNum)
+testPredictions
+```

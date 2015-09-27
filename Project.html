@@ -70,7 +70,7 @@ img {
 
 <div id="synopsis" class="section level2">
 <h2>Synopsis</h2>
-<p>In this report a model is created for the data from accelerometers on the belt, forearm, arm, and dumbell of 6 participants to predict 5 different ways to perform barbell lifts. The model will be trained and cross-validated by using the <strong>training data</strong> from<br /><em><a href="https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv" class="uri">https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv</a></em></p>
+<p>This report summairzes the procedure of building a machine learning algorithm to predict activity quality from activity monitors. This algorithm is created for the data from accelerometers on the belt, forearm, arm, and dumbell of 6 participants to predict 5 different ways to perform barbell lifts. The model will be trained and cross-validated by using the <strong>training data</strong> from<br /><em><a href="https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv" class="uri">https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv</a></em></p>
 <p>And the final model will be used to predict the barbell lift patterns from the <strong>testing data</strong> from<br /><em><a href="https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv" class="uri">https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv</a></em></p>
 <p>The data for this project come from this source: <em><a href="http://groupware.les.inf.puc-rio.br/har" class="uri">http://groupware.les.inf.puc-rio.br/har</a></em>.</p>
 </div>
@@ -251,7 +251,15 @@ gbmFit1 &lt;- train(classe ~ ., data = trainTrain, method = &quot;gbm&quot;, trC
 </div>
 <div id="results" class="section level2">
 <h2>Results</h2>
-<p>Commparing the out-of-sample errors, the better model, i.e. the one with the lower out-of-sample error is chosen for making the prediction for the <strong>testing data</strong>. The better is the <strong>Random Forest</strong> model. <strong>According to the cross validation, the out-of-sample error is 1%.</strong></p>
+<p>Commparing the out-of-sample errors, the better model, i.e. the one with the lower out-of-sample error is chosen for making the prediction for the <strong>testing data</strong>. The better one is the <strong>Random Forest</strong> model. <strong>According to the cross validation, the out-of-sample error is 1%.</strong></p>
+<p>The following R code chuck produce the predictions for the 20 test cases by using the model created above. The test case data, <strong>testNum</strong> have been cleaned up in the <strong>Data Processing</strong> section. These prodictions are submitted as the fulfillment of this project’s <strong>“Course Project: Submission”</strong> portion.</p>
+<pre class="r"><code>testPredictions &lt;- predict(modFitRF,testNum)</code></pre>
+<pre><code>## Loading required package: randomForest
+## randomForest 4.6-10
+## Type rfNews() to see new features/changes/bug fixes.</code></pre>
+<pre class="r"><code>testPredictions</code></pre>
+<pre><code>##  [1] B A B A A E D B A A B C B A E E A B B B
+## Levels: A B C D E</code></pre>
 </div>
 
 
