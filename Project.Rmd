@@ -1,0 +1,110 @@
+---
+title: "Coursera Machine Learning Project"
+author: "Yu-Li Chang"
+date: "September 25, 2015"
+output: html_document
+---
+
+##Synopsis
+In this report a model is created for the data from accelerometers on the belt, forearm, arm, and dumbell of 6 participants to predict 5 different ways to perform barbell lifts. The model will be trained and cross-validated by using the **training data** from  
+*https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv*
+
+And the final model will be used to predict the barbell lift patterns from the **testing data** from  
+*https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv*  
+
+The data for this project come from this source:   *http://groupware.les.inf.puc-rio.br/har*.
+
+##Data Processing
+The following R code chunk reads in the original :
+
+```{r, cache=TRUE}
+trainingUrl <- "https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv"
+testingUrl <- "https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv"
+download.file(trainingUrl, destfile = "training.csv")
+download.file(testingUrl, destfile = "testing.csv")
+dateDownloaded <- date()
+training <- read.table("training.csv", sep = ",", header = TRUE)
+testing <- read.table("testing.csv", sep = ",", header = TRUE)
+```
+
+Both **training data** and **testing data** are cleaned up by removing all the non-numeric lists and the time stamp lists. Also remove the lists having 90% or more NA in the entries. The results are assigned to data frame **trainNum** and **testNum**, respectively: 
+
+```{r, cache=TRUE}
+NAthres <- 90
+
+nums <- sapply(training, is.numeric)
+trainNum <- training[,nums]
+countNA <- apply(trainNum, 2, function(x) {length(which(is.na(x)))/length(x)*100})
+trainNum <- trainNum[, countNA < NAthres]
+trainNum <- subset(trainNum, select = -c(raw_timestamp_part_1, raw_timestamp_part_2, num_window))
+trainNum <- cbind(trainNum[,2:ncol(trainNum)],training$classe)
+colnames(trainNum)[ncol(trainNum)] <- "classe"
+
+nums <- sapply(testing, is.numeric)
+testNum <- testing[,nums]
+countNA <- apply(testNum, 2, function(x) {length(which(is.na(x)))/length(x)*100})
+testNum <- testNum[, countNA < NAthres]
+testNum <- subset(testNum, select = -c(raw_timestamp_part_1, raw_timestamp_part_2, num_window))
+```
+
+Partition training set and testing set for the **trainNum** data frame:
+
+```{r message=FALSE, warning=FALSE, cache=TRUE, echo=FALSE}
+
+install.packages("caret",repos = "http://cran.us.r-project.org")
+```
+
+```{r, cache=TRUE, echo=FALSE}
+library(caret, lib.loc = "C:/Users/13360/Documents/R/win-library/3.2")
+```
+
+```{r, cache=TRUE}
+set.seed(998)
+inTrain <- createDataPartition(y=trainNum$classe, p = 0.6, list = FALSE)
+trainTrain <- trainNum[inTrain,]
+testTrain <- trainNum[-inTrain,]
+dim(trainTrain)
+```
+
+Use the **Random Forest Method** to fit the model for the training set trainTrain. 
+
+```{r, cache=TRUE, message=FALSE, results='hide'}
+modFitRF <- train(trainTrain$classe ~., data = trainTrain, method = "rf")
+```
+
+After that use the **Confusion Matrix** to check the in-sample error.
+
+```{r, cache=TRUE}
+confusionMatrix(trainTrain$classe,predict(modFitRF,trainTrain))
+```
+
+The confusion matrix shows 100% accuracy. I.e, the **in-sample error is 0.0%**. Could it mean this model is over fit? This can be verified by the cross validation:
+
+```{r, cache=TRUE}
+confusionMatrix(testTrain$classe,predict(modFitRF,testTrain))
+```
+
+The confusion matrix show **1% out-of-samle error** (99% accuracy). The model seems working very nicely. 
+
+Following the example given by *http://topepo.github.io/caret/training.html#*
+ to fit a boosted tree model via the gbm (gradient boosting machine) package using repeated cross-validation:
+
+```{r, cache=TRUE, message=FALSE, results='hide'}
+fitControl <- trainControl(method = "repeatedcv", number = 3, repeats = 3)
+
+set.seed(825)
+
+gbmFit1 <- train(classe ~ ., data = trainTrain, method = "gbm", trControl = fitControl, verbose = FALSE)
+```
+
+Now check the in-sample and out-of-sample errors:
+
+```{r, cache=TRUE}
+confusionMatrix(trainTrain$classe,predict(gbmFit1,trainTrain))
+confusionMatrix(testTrain$classe,predict(gbmFit1,testTrain))
+```
+
+This model has **2.4% in-sample error** (97.6% accuracy) and **4% out-of-sample error** (96% accuracy). 
+
+##Results
+Commparing the out-of-sample errors, the better model, i.e. the one with the lower out-of-sample error is chosen for making the prediction for the **testing data**. The better is the **Random Forest** model. **According to the cross validation, the out-of-sample error is 1%.**
