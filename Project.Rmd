@@ -109,9 +109,9 @@ This model has **2.4% in-sample error** (97.6% accuracy) and **4% out-of-sample 
 ##Results
 Commparing the out-of-sample errors, the better model, i.e. the one with the lower out-of-sample error is chosen for making the prediction for the **testing data**. The better one is the **Random Forest** model. **According to the cross validation, the out-of-sample error is 1%.**   
 
-The following R code chuck produce the predictions for the 20 test cases by using the model created above. The test case data, **testNum** have been cleaned up in the **Data Processing** section. These prodictions are submitted as the fulfillment of this project's **"Course Project: Submission"** portion.
+The following R code chunk produces the predictions for the 20 test cases by using the model created above. In this code chunk the data **testNum** is the result of the data of the 20 test cases, after going through the clean up process described in the **Data Processing** section. These prodictions are submitted as the fulfillment of this project's **"Course Project: Submission"** portion.
 
-```{r}
+```{r message=FALSE}
 testPredictions <- predict(modFitRF,testNum)
 testPredictions
 ```

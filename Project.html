@@ -252,12 +252,9 @@ gbmFit1 &lt;- train(classe ~ ., data = trainTrain, method = &quot;gbm&quot;, trC
 <div id="results" class="section level2">
 <h2>Results</h2>
 <p>Commparing the out-of-sample errors, the better model, i.e. the one with the lower out-of-sample error is chosen for making the prediction for the <strong>testing data</strong>. The better one is the <strong>Random Forest</strong> model. <strong>According to the cross validation, the out-of-sample error is 1%.</strong></p>
-<p>The following R code chuck produce the predictions for the 20 test cases by using the model created above. The test case data, <strong>testNum</strong> have been cleaned up in the <strong>Data Processing</strong> section. These prodictions are submitted as the fulfillment of this project’s <strong>“Course Project: Submission”</strong> portion.</p>
-<pre class="r"><code>testPredictions &lt;- predict(modFitRF,testNum)</code></pre>
-<pre><code>## Loading required package: randomForest
-## randomForest 4.6-10
-## Type rfNews() to see new features/changes/bug fixes.</code></pre>
-<pre class="r"><code>testPredictions</code></pre>
+<p>The following R code chunk produces the predictions for the 20 test cases by using the model created above. In this code chunk the data <strong>testNum</strong> is the result of the data of the 20 test cases, after going through the clean up process described in the <strong>Data Processing</strong> section. These prodictions are submitted as the fulfillment of this project’s <strong>“Course Project: Submission”</strong> portion.</p>
+<pre class="r"><code>testPredictions &lt;- predict(modFitRF,testNum)
+testPredictions</code></pre>
 <pre><code>##  [1] B A B A A E D B A A B C B A E E A B B B
 ## Levels: A B C D E</code></pre>
 </div>
